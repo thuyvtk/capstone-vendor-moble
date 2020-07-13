@@ -1,1 +1,0 @@
-capstone-vendor-moble
