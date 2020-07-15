@@ -2,18 +2,24 @@ import React, {Fragment, useState} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import Header from '../components/Header';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {round} from 'react-native-reanimated';
-import {NavigationContainer} from '@react-navigation/native';
-import Overview from './Overview';
-import Login from './Login';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import IncomingBooking from './IncomingBooking';
+import DatePicker from 'react-native-datepicker';
 // import {Picker} from '@react-native-community/picker';
 // import RNPickerSelect from 'react-native-picker-select'
 
 const Tab = createMaterialTopTabNavigator();
 
+const getCurrentDate=()=>{
+  var date = new Date().getDate();
+      var month = new Date().getMonth() + 1;
+      var year = new Date().getFullYear();
+      return date + '-' + month + '-' + year;
+}
+
 const ListBooking = () => {
   const [hostelGroup, setHostelGroup] = useState('1');
+  const [date, setDate] = useState(getCurrentDate())
 
   return (
     <Fragment>
@@ -41,12 +47,42 @@ const ListBooking = () => {
         <TouchableOpacity style={styles.btnEditSchedule}>
           <Text style={styles.txtEditSchedule}>Quản lí lịch rảnh</Text>
         </TouchableOpacity>
+        <DatePicker
+          style={{ width: "100%", top: 20, height: 100}}
+          date={date}
+          mode="date" 
+          format="DD-MM-YYYY"
+          // minDate={state}
+          // maxDate="01-01-2019"
+          // confirmBtnText="Confirm"
+          // cancelBtnText="Cancel"
+          customStyles={{
+            dateIcon: {
+              position: 'absolute',
+              left: 0,
+              top: 4,
+              marginLeft: 0,
+            },
+            dateInput: {
+              borderWidth: 0,
+              alignItems: "flex-end",
+              
+            },
+            dateText: {
+              // color: '#1F17FF',
+              fontFamily: 'lato-semibold'
+            }
+          }}
+          onDateChange={d => setDate(d)}
+        />
       </View>
       {/* list booking */}
       <View style={styles.listBooking}>
-        <Tab.Navigator lazy='false'>
-          <Tab.Screen name="Tổng quan" component={Overview} />
-          <Tab.Screen name="Login" component={Login} />
+        <Tab.Navigator lazy='true'>
+          <Tab.Screen name="Sắp tới" component={IncomingBooking} />
+          <Tab.Screen name="Đã gặp" component={IncomingBooking} />
+          <Tab.Screen name="Lỡ hẹn" component={IncomingBooking} />
+          <Tab.Screen name="Hủy" component={IncomingBooking} />
         </Tab.Navigator>
       </View>
     </Fragment>
@@ -57,14 +93,14 @@ export default ListBooking;
 
 const styles = StyleSheet.create({
   hostelGroup: {
-    flex: 1,
+    height: 220,
     backgroundColor: '#ffffff',
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
   },
   hgInfor: {
-    height: '50%',
+    height: 80,
     flexDirection: 'row',
   },
   btnEditSchedule: {
